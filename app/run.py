@@ -13,6 +13,9 @@ from plotly.graph_objs import Bar
 from sklearn.externals import joblib
 from sqlalchemy import create_engine
 from sklearn.base import BaseEstimator, TransformerMixin
+import seaborn as sns
+import matplotlib.pyplot as plt
+from wordcloud import WordCloud
 
 app = Flask(__name__)
 
@@ -66,6 +69,19 @@ def index():
     
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
+    
+    # Visualize Probability distribution of message length
+    df['message_length'] = df['message'].apply(lambda words: len(words.split(" ")))
+    sns_plot = sns.displot(df.message_length,bins=10,kde=True,stat="probability")
+    plt.title('Probability distribution of message length')
+    
+    # Visualize WordCloud for Profanity Escalation Comments
+    wordcloud = WordCloud(background_color="white").generate(' '.join(df_pos.comment_clean))
+    plt.imshow(wordcloud, interpolation = 'bilinear')
+    plt.axis("off")
+    plt.title('WordCloud for Profanity Escalation Comments')
+    
+    
     graphs = [
         {
             'data': [
