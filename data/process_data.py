@@ -44,9 +44,15 @@ def clean_data(df):
         # convert column from string to numeric
         categories[column] = categories[column].astype(int)
 
+    # Converts values to binary
+    for column in categories.columns:
+        print(column)
+        print(categories[column].value_counts())
+    categories = categories.loc[categories.related.isin([0,1]),:]
+    
     # drop the original categories column from `df`
     df.drop(['categories'], axis=1, inplace=True)
-    df = pd.concat([df,categories],axis=1)
+    df = pd.concat([df,categories],join='inner',axis=1)
     df.drop_duplicates(inplace=True)
     return df
     
@@ -64,7 +70,7 @@ def save_data(df, database_filename):
     None
     '''
     engine = create_engine('sqlite:///' + database_filename)
-    df.to_sql('message_processed', engine, index=False)
+    df.to_sql('message_processed', engine,if_exists='replace', index=False)
     print('Save data successfully.')
 
 def main():
