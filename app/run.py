@@ -68,6 +68,9 @@ def index():
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
     
+    
+    category_counts = df[df.columns[4:]].sum()
+    
     category_proportion = df[df.columns[4:]].sum()/len(df)
     category_proportion = category_proportion.sort_values(ascending = False)
     category_name = list(category_proportion.index) 
@@ -110,7 +113,25 @@ def index():
                     'title': "Category"
                 }
             }
-        }      
+        },
+        {
+            'data': [
+                Bar(
+                    x=category_name,
+                    y=category_counts
+                )
+            ],
+
+            'layout': {
+                'title': 'Counts of messages by Category',
+                'yaxis': {
+                    'title': "Counts"
+                },
+                'xaxis': {
+                    'title': "Category"
+                }
+            }
+        }  
     ]
     
     # encode plotly graphs in JSON
